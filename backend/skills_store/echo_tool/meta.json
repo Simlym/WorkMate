@@ -1,0 +1,7 @@
+{
+  "name": "echo_tool",
+  "version": "0.1.0",
+  "description": "Echoes back whatever the user says",
+  "entry": "echo_skill:EchoTool",
+  "requirements": []
+}
