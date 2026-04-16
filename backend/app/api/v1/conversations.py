@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, desc
+from sqlalchemy.orm import selectinload
 
 from app.database import get_db
 from app.core.deps import get_current_user
@@ -44,11 +45,14 @@ async def get_conversation(
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
-    conv = await _get_owned_conversation(conv_id, current_user.id, db)
     result = await db.execute(
-        select(Message).where(Message.conversation_id == conv_id).order_by(Message.created_at)
+        select(Conversation)
+        .where(Conversation.id == conv_id, Conversation.user_id == current_user.id)
+        .options(selectinload(Conversation.messages))
     )
-    conv.messages = result.scalars().all()
+    conv = result.scalar_one_or_none()
+    if not conv:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Conversation not found")
     return conv
 
 

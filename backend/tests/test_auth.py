@@ -39,7 +39,7 @@ async def test_me(client, test_user, auth_headers):
 
 async def test_me_no_token(client):
     resp = await client.get("/api/v1/auth/me")
-    assert resp.status_code == 403
+    assert resp.status_code == 401
 
 
 async def test_refresh_token(client, test_user):

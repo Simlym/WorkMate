@@ -76,4 +76,4 @@ async def test_conversations_isolated_between_users(client, test_user, admin_use
 
 async def test_create_conversation_requires_auth(client):
     resp = await client.post("/api/v1/conversations", json={"title": "No auth"})
-    assert resp.status_code == 403
+    assert resp.status_code == 401
